@@ -1,12 +1,12 @@
 import { ReactNode, useState } from "react";
 import {
   Box,
-  Button,
   Dialog,
-  DialogActions,
+  DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogActions,
+  Button,
 } from "@mui/material";
 
 type Props = {

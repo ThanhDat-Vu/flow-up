@@ -13,11 +13,13 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.13",
+    "nprogress": "^0.2.0",
     "react": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.4.3"
   },
   "devDependencies": {
+    "@types/nprogress": "^0.2.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@types/react-helmet": "^6.1.5",
