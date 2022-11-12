@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Grid, Typography, IconButton, Avatar, Divider } from "@mui/material";
 import { Link } from "react-router-dom";
 import { CustomMenu } from "../common";
