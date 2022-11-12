@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import User, { PUBLIC_FIELDS } from "../src/models/user-model";
-import _ from "lodash";
+import User from "../src/models/user-model";
 
 dotenv.config();
 

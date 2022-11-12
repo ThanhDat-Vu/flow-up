@@ -1,7 +1,7 @@
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
 import { useState, SyntheticEvent, useEffect } from "react";
-import { getUserBySlug, updateProfile } from "../api";
+import { getAuthUser, updateProfile } from "../api";
 import nProgress from "nprogress";
 
 export default function Settings() {
@@ -12,7 +12,7 @@ export default function Settings() {
   });
 
   useEffect(() => {
-    getUserBySlug("admin").then((user) => setProfile(user));
+    getAuthUser().then((user) => user && setProfile(user));
   }, []);
 
   function handleSubmit(e: SyntheticEvent) {

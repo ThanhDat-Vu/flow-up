@@ -2,6 +2,17 @@ import { Request, Response } from "express";
 import User from "../models/user-model";
 import * as statusMessage from "../utils/status-message";
 
+export function getAuthUser(req: Request, res: Response) {
+  statusMessage.inProgress("get auth user");
+  try {
+    res.json(req.user);
+    statusMessage.isDone();
+  } catch (err) {
+    statusMessage.haveError();
+    console.log(err);
+  }
+}
+
 export async function getUserBySlug(req: Request, res: Response) {
   statusMessage.inProgress("get user by slug");
   try {

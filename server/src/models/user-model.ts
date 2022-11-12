@@ -8,6 +8,7 @@ export const PUBLIC_FIELDS = [
   "email",
   "displayName",
   "avatarUrl",
+  "isLinkWithGoogle",
 ];
 
 export interface IUser {
@@ -18,6 +19,12 @@ export interface IUser {
   email: string;
   displayName: string;
   avatarUrl: string;
+  googleId: string;
+  googleToken: {
+    accessToken: string;
+    refreshToken: string;
+  };
+  isLinkWithGoogle: string;
 }
 
 export interface UserModel extends Model<IUser> {
@@ -30,6 +37,22 @@ export interface UserModel extends Model<IUser> {
     id: string;
     displayName: string;
     avatarUrl: string;
+  }): IUser;
+  authWithGoogle({
+    email,
+    displayName,
+    avatarUrl,
+    googleId,
+    googleToken,
+  }: {
+    email: string;
+    displayName: string;
+    avatarUrl: string;
+    googleId: string;
+    googleToken: {
+      accessToken: string;
+      refreshToken: string;
+    };
   }): IUser;
 }
 
@@ -51,6 +74,20 @@ const UserSchema = new Schema(
     },
     displayName: String,
     avatarUrl: String,
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    googleToken: {
+      accessToken: String,
+      refreshToken: String,
+    },
+    isLinkWithGoogle: {
+      type: Boolean,
+      require: true,
+      default: false,
+    },
   },
   {
     statics: {
@@ -59,12 +96,13 @@ const UserSchema = new Schema(
       },
 
       async updateById({ id, displayName, avatarUrl }) {
-        const user = await this.findById(id).lean();
+        const user: IUser = await this.findById(id).lean();
 
         if (displayName === user?.displayName)
           return _.pick(user, PUBLIC_FIELDS);
 
         const newSlug = await generateSlug(this, displayName);
+
         return await this.findByIdAndUpdate(
           id,
           {
@@ -77,6 +115,45 @@ const UserSchema = new Schema(
         )
           .select(PUBLIC_FIELDS)
           .lean();
+      },
+
+      async authWithGoogle({
+        email,
+        displayName,
+        avatarUrl,
+        googleId,
+        googleToken,
+      }) {
+        const user = await this.findOne({ email }).lean();
+
+        if (user) {
+          if (_.isEmpty(googleToken) && user.googleId)
+            return _.pick(user, PUBLIC_FIELDS);
+
+          return await this.findByIdAndUpdate(user._id, {
+            ...user,
+            avatarUrl: user.avatarUrl || avatarUrl,
+            googleId,
+            googleToken,
+          })
+            .select(PUBLIC_FIELDS)
+            .lean();
+        }
+
+        const slug = await generateSlug(this, displayName);
+
+        const newUser = await this.create({
+          slug,
+          createdAt: new Date(),
+          email,
+          displayName,
+          avatarUrl,
+          googleId,
+          googleToken,
+          isLinkWithGoogle: true,
+        });
+
+        return _.pick(newUser, PUBLIC_FIELDS);
       },
     },
   }
