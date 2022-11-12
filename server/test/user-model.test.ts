@@ -34,10 +34,22 @@ describe("User Controller test", () => {
     mongoose.disconnect();
   });
 
+  it("should not update user with same display name", async () => {
+    const insertedUser = await User.getBySlug("anonymous");
+
+    const updatedUser = await User.updateById({
+      id: insertedUser?._id,
+      displayName: "Anonymous",
+      avatarUrl: "",
+    });
+
+    expect(updatedUser).toEqual(insertedUser);
+  });
+
   it("should generate different slug for same displayName", async () => {
     const insertedUser = await User.getBySlug("unknown");
 
-    await User.updateById({
+    const updatedUser = await User.updateById({
       id: insertedUser?._id,
       displayName: "Anonymous",
       avatarUrl: ".",
@@ -45,11 +57,7 @@ describe("User Controller test", () => {
 
     const modifiedUser = await User.getBySlug("anonymous-1");
 
-    expect(modifiedUser).toMatchObject({
-      slug: "anonymous-1",
-      displayName: "Anonymous",
-      avatarUrl: ".",
-    });
+    expect(modifiedUser).toMatchObject(updatedUser);
   });
 
   it("should generate unused smaller-count slug for same displayName", async () => {

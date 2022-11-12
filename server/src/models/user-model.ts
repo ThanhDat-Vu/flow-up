@@ -65,12 +65,16 @@ const UserSchema = new Schema(
           return _.pick(user, PUBLIC_FIELDS);
 
         const newSlug = await generateSlug(this, displayName);
-        return await this.findByIdAndUpdate(id, {
-          ...user,
-          slug: newSlug,
-          displayName,
-          avatarUrl,
-        })
+        return await this.findByIdAndUpdate(
+          id,
+          {
+            ...user,
+            slug: newSlug,
+            displayName,
+            avatarUrl,
+          },
+          { returnDocument: "after" }
+        )
           .select(PUBLIC_FIELDS)
           .lean();
       },

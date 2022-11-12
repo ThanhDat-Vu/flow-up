@@ -2,7 +2,7 @@ import Layout from "../components/layout";
 import { Box, Alert, Button } from "@mui/material";
 import { AlertDialog, Link } from "../components/common";
 import { notify } from "../components/common/Notifier";
-import NProgress from "nprogress";
+import nProgress from "nprogress";
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
         title="Will you marry me?"
         message="I'm rich :>"
         onAccept={() => {
-          NProgress.start();
+          nProgress.start();
           try {
             notify({
               vertical: "top",
@@ -33,7 +33,7 @@ export default function Home() {
           } catch (err) {
             console.log(err);
           } finally {
-            NProgress.done();
+            nProgress.done();
           }
         }}
       >

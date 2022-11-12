@@ -1,15 +1,30 @@
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
-import { useState, SyntheticEvent } from "react";
+import { useState, SyntheticEvent, useEffect } from "react";
+import { getUserBySlug, updateProfile } from "../api";
+import nProgress from "nprogress";
 
 export default function Settings() {
   const [profile, setProfile] = useState({
     displayName: "",
+    email: "",
     avatarUrl: "",
   });
 
+  useEffect(() => {
+    getUserBySlug("admin").then((user) => setProfile(user));
+  }, []);
+
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
+    nProgress.start();
+    try {
+      updateProfile(profile).then((user) => setProfile(user));
+    } catch (err) {
+      console.log(err);
+    } finally {
+      nProgress.done();
+    }
   }
 
   return (
@@ -38,6 +53,8 @@ export default function Settings() {
           <TextField
             id="displayName"
             label="Display Name"
+            helperText="Your display name as seen by your team members."
+            variant="standard"
             value={profile.displayName}
             onChange={(e) =>
               setProfile((prevProfile) => ({
@@ -45,8 +62,6 @@ export default function Settings() {
                 displayName: e.target.value,
               }))
             }
-            helperText="Your display name as seen by your team members."
-            variant="standard"
           />
           <TextField
             id="email"
@@ -56,6 +71,13 @@ export default function Settings() {
             InputProps={{
               readOnly: true,
             }}
+            value={profile.email}
+            onChange={(e) =>
+              setProfile((prevProfile) => ({
+                ...prevProfile,
+                email: e.target.value,
+              }))
+            }
           />
           <Button type="submit" variant="contained">
             Save changes
