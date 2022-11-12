@@ -1,6 +1,6 @@
 import Layout from "../components/layout";
-import { Alert, Button } from "@mui/material";
-import { AlertDialog } from "../components/common";
+import { Box, Alert, Button } from "@mui/material";
+import { AlertDialog, Link } from "../components/common";
 import { notify } from "../components/common/Notifier";
 import NProgress from "nprogress";
 
@@ -11,6 +11,9 @@ export default function Home() {
       description="Flow Up is a project management app."
     >
       <h1>Home</h1>
+      <Box mb={2}>
+        <Link to="/settings">Settings page</Link>
+      </Box>
       <AlertDialog
         title="Will you marry me?"
         message="I'm rich :>"
