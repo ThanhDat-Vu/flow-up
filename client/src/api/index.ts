@@ -1,5 +1,5 @@
 import fetch from "isomorphic-fetch";
-import { API_BASE } from "../constants";
+import { API_BASE, SERVER_URL } from "../constants";
 
 async function postRequest(path: string, data: Object) {
   const res = await fetch(API_BASE + path, {

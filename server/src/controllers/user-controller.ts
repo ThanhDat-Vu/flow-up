@@ -5,7 +5,7 @@ import * as statusMessage from "../utils/status-message";
 export function getAuthUser(req: Request, res: Response) {
   statusMessage.inProgress("get auth user");
   try {
-    res.json(req.user);
+    res.json(req.user || null);
     statusMessage.isDone();
   } catch (err) {
     statusMessage.haveError();

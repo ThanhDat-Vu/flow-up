@@ -1,30 +1,26 @@
+import { useLoaderData } from "react-router-dom";
+import { useState, SyntheticEvent } from "react";
+import waitforit from "../utils/waitforit";
+import { updateProfile } from "../api";
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
-import { useState, SyntheticEvent, useEffect } from "react";
-import { getAuthUser, updateProfile } from "../api";
-import nProgress from "nprogress";
 
-export default function Settings() {
-  const [profile, setProfile] = useState({
-    displayName: "",
-    email: "",
-    avatarUrl: "",
-  });
+interface IUser {
+  displayName: "";
+  email: "";
+  avatarUrl: "";
+}
 
-  useEffect(() => {
-    getAuthUser().then((user) => user && setProfile(user));
-  }, []);
+function Settings() {
+  const user: IUser | any = useLoaderData();
+
+  const [profile, setProfile] = useState(user);
 
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    nProgress.start();
-    try {
+    waitforit(() => {
       updateProfile(profile).then((user) => setProfile(user));
-    } catch (err) {
-      console.log(err);
-    } finally {
-      nProgress.done();
-    }
+    });
   }
 
   return (
@@ -36,7 +32,7 @@ export default function Settings() {
           <Typography variant="h6">Profile Picture</Typography>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar
-              alt={profile.displayName}
+              alt={profile?.displayName}
               src={profile.avatarUrl}
               sx={{ width: 64, height: 64 }}
             >
@@ -57,7 +53,7 @@ export default function Settings() {
             variant="standard"
             value={profile.displayName}
             onChange={(e) =>
-              setProfile((prevProfile) => ({
+              setProfile((prevProfile: IUser) => ({
                 ...prevProfile,
                 displayName: e.target.value,
               }))
@@ -73,7 +69,7 @@ export default function Settings() {
             }}
             value={profile.email}
             onChange={(e) =>
-              setProfile((prevProfile) => ({
+              setProfile((prevProfile: IUser) => ({
                 ...prevProfile,
                 email: e.target.value,
               }))
@@ -87,3 +83,5 @@ export default function Settings() {
     </Layout>
   );
 }
+
+export default Settings;

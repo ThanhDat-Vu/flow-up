@@ -21,12 +21,12 @@ AuthRoute.get(
   }
 );
 
-AuthRoute.post("/logout", function (req, res, next) {
+AuthRoute.get("/logout", function (req, res, next) {
   req.logout(function (err) {
     if (err) {
       return next(err);
     }
-    res.redirect(process.env.CLIENT_URL || "");
+    res.redirect(`${process.env.CLIENT_URL}/login`);
   });
 });
 

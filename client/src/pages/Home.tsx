@@ -1,8 +1,8 @@
 import Layout from "../components/layout";
 import { Box, Alert, Button } from "@mui/material";
 import { AlertDialog, Link } from "../components/common";
+import waitforit from "../utils/waitforit";
 import { notify } from "../components/common/Notifier";
-import nProgress from "nprogress";
 
 export default function Home() {
   return (
@@ -18,8 +18,7 @@ export default function Home() {
         title="Will you marry me?"
         message="I'm rich :>"
         onAccept={() => {
-          nProgress.start();
-          try {
+          waitforit(() => {
             notify({
               vertical: "top",
               horizontal: "right",
@@ -30,11 +29,7 @@ export default function Home() {
                 </Alert>
               ),
             });
-          } catch (err) {
-            console.log(err);
-          } finally {
-            nProgress.done();
-          }
+          });
         }}
       >
         <Button variant="contained">Click me</Button>

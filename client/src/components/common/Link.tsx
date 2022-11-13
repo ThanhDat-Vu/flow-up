@@ -3,7 +3,7 @@ import { Link as BaseLink } from "react-router-dom";
 
 export default function Link({ children, ...props }: any) {
   return (
-    <MUILink {...props} component={BaseLink}>
+    <MUILink {...props} component={BaseLink} underline="none">
       {children}
     </MUILink>
   );

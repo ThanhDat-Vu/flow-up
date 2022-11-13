@@ -1,12 +1,13 @@
 import { ReactNode, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Menu, Divider, MenuItem } from "@mui/material";
+import { Box, Menu, Divider, MenuItem, Link as MUILink } from "@mui/material";
 import { Link } from "../common";
 
 type Props = {
   options: {
     label?: string;
     path?: string;
+    externalUrl?: boolean;
     separator?: boolean;
     onClick?: () => void;
   }[];
@@ -50,6 +51,10 @@ export default function CustomMenu({ options, children }: Props) {
         {options.map((opt, i) =>
           opt.separator ? (
             <Divider key={i} flexItem />
+          ) : opt.externalUrl ? (
+            <MUILink key={i} href={opt.path} underline="none">
+              <MenuItem onClick={opt.onClick}>{opt.label}</MenuItem>
+            </MUILink>
           ) : opt.path ? (
             <Link
               key={i}
@@ -59,7 +64,9 @@ export default function CustomMenu({ options, children }: Props) {
               <MenuItem onClick={opt.onClick}>{opt.label}</MenuItem>
             </Link>
           ) : (
-            <MenuItem onClick={opt.onClick}>{opt.label}</MenuItem>
+            <MenuItem key={i} onClick={opt.onClick}>
+              {opt.label}
+            </MenuItem>
           )
         )}
       </Menu>

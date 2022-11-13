@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { Helmet } from "react-helmet-async";
 import { Grid, Typography, IconButton, Avatar, Divider } from "@mui/material";
-import { Link } from "react-router-dom";
-import { CustomMenu } from "../common";
+import { CustomMenu, Link } from "../common";
+import { SERVER_URL } from "../../constants";
 
 type Props = {
   title: string;
@@ -25,7 +25,8 @@ export default function Layout({ title, description, children }: Props) {
     },
     {
       label: "Logout",
-      path: "/logout",
+      path: `${SERVER_URL}/auth/logout`,
+      externalUrl: true,
     },
   ];
 
