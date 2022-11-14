@@ -8,7 +8,6 @@ import waitforit from "../utils/waitforit";
 const authLoader = async () => {
   return await waitforit(async () => {
     const user = await getAuthUser();
-    console.log(user);
     if (!user) return redirect("/login");
     return user;
   });

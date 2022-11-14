@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { useState, SyntheticEvent } from "react";
+import { useState, SyntheticEvent, ChangeEvent, useEffect } from "react";
 import waitforit from "../utils/waitforit";
 import { updateProfile } from "../api";
 import Layout from "../components/layout";
@@ -23,6 +23,27 @@ function Settings() {
     });
   }
 
+  const [avatar, setAvatar] = useState<any>();
+  useEffect(() => {
+    if (!avatar) {
+      setProfile((prevProfile: IUser) => ({
+        ...prevProfile,
+        avatarUrl: undefined,
+      }));
+      return;
+    }
+    const avatarUrl = URL.createObjectURL(avatar);
+    setProfile((prevProfile: IUser) => ({ ...prevProfile, avatarUrl }));
+    return () => URL.revokeObjectURL(avatarUrl);
+  }, [avatar]);
+
+  function previewAvatar(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      setAvatar(file);
+    }
+  }
+
   return (
     <Layout title="FlowUp | Settings" description="FlowUp settings page">
       <h1>Your Profile</h1>
@@ -39,9 +60,13 @@ function Settings() {
               {profile.displayName[0]}
             </Avatar>
             <Button size="small" variant="outlined" component="label">
-              {" "}
               Upload
-              <input hidden accept="image/*" multiple type="file" />
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                onChange={(e) => previewAvatar(e)}
+              />
             </Button>
           </Stack>
 
