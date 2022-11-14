@@ -26,6 +26,19 @@ export async function getUserBySlug(req: Request, res: Response) {
   }
 }
 
+export async function uploadUserAvatar(req: Request, res: Response) {
+  statusMessage.inProgress("upload user avatar");
+  try {
+    const avatar = req.file;
+    console.log(avatar);
+    res.json("hi");
+    statusMessage.isDone();
+  } catch (err) {
+    statusMessage.haveError();
+    console.log(err);
+  }
+}
+
 export async function updateUserProfile(req: Request, res: Response) {
   statusMessage.inProgress("update user profile");
   try {

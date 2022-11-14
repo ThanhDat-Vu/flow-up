@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { useState, SyntheticEvent, ChangeEvent, useEffect } from "react";
 import waitforit from "../utils/waitforit";
-import { updateProfile } from "../api";
+import { updateProfile, uploadAvatar } from "../api";
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
 
@@ -16,13 +16,6 @@ function Settings() {
 
   const [profile, setProfile] = useState(user);
 
-  function handleSubmit(e: SyntheticEvent) {
-    e.preventDefault();
-    waitforit(() => {
-      updateProfile(profile).then((user) => setProfile(user));
-    });
-  }
-
   const [avatar, setAvatar] = useState<any>();
   useEffect(() => {
     if (!avatar) {
@@ -35,13 +28,21 @@ function Settings() {
     const avatarUrl = URL.createObjectURL(avatar);
     setProfile((prevProfile: IUser) => ({ ...prevProfile, avatarUrl }));
     return () => URL.revokeObjectURL(avatarUrl);
-  }, [avatar]);
+  }, [avatar?.name]);
 
   function previewAvatar(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setAvatar(file);
     }
+  }
+
+  function handleSubmit(e: SyntheticEvent) {
+    e.preventDefault();
+    waitforit(() => {
+      uploadAvatar(avatar).then((res) => console.log(res));
+      // updateProfile(profile).then((user) => setProfile(user));
+    });
   }
 
   return (
