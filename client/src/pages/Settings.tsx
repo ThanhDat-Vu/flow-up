@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { useState, SyntheticEvent, ChangeEvent, useEffect } from "react";
 import waitforit from "../utils/waitforit";
-import { updateProfile, uploadAvatar } from "../api";
+import { getPresignedUrlToUpload, updateProfile } from "../api";
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
 
@@ -39,8 +39,13 @@ function Settings() {
 
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    waitforit(() => {
-      uploadAvatar(avatar).then((res) => console.log(res));
+    waitforit(async () => {
+      const presignedUrl = await getPresignedUrlToUpload();
+      console.log(presignedUrl);
+      // setProfile((prevProfile: IUser) => ({
+      //   ...prevProfile,
+      //   avatarUrl: presignedUrl,
+      // }));
       // updateProfile(profile).then((user) => setProfile(user));
     });
   }
@@ -54,7 +59,7 @@ function Settings() {
           <Typography variant="h6">Profile Picture</Typography>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar
-              alt={profile?.displayName}
+              alt={profile.displayName}
               src={profile.avatarUrl}
               sx={{ width: 64, height: 64 }}
             >

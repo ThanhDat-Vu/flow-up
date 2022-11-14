@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { createPresignedUrlToUpload } from "../libs/s3-client";
 import User from "../models/user-model";
 import * as statusMessage from "../utils/status-message";
 
@@ -26,12 +27,11 @@ export async function getUserBySlug(req: Request, res: Response) {
   }
 }
 
-export async function uploadUserAvatar(req: Request, res: Response) {
-  statusMessage.inProgress("upload user avatar");
+export async function getPresignedUrlToUpload(_: Request, res: Response) {
+  statusMessage.inProgress("get presigned url for upload");
   try {
-    const avatar = req.file;
-    console.log(avatar);
-    res.json("hi");
+    const presignedUrl = await createPresignedUrlToUpload();
+    res.json(presignedUrl);
     statusMessage.isDone();
   } catch (err) {
     statusMessage.haveError();

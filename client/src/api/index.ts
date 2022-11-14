@@ -27,14 +27,8 @@ export async function getUserBySlug(slug: string) {
   return await postRequest("/user/get-user-by-slug", { slug });
 }
 
-export async function uploadAvatar(avatar: any) {
-  var data = new FormData();
-  data.append("avatar", avatar);
-  const res = await fetch(API_BASE + "/user/upload-avatar", {
-    method: "POST",
-    body: data,
-  });
-  return await res.json();
+export async function getPresignedUrlToUpload() {
+  return await postRequest("/user/get-presigned-url-for-upload", {});
 }
 
 export async function updateProfile(profile: Object) {
