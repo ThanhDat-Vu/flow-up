@@ -13,6 +13,7 @@ export async function createPresignedUrlToUpload() {
   const uploadParams = {
     Bucket: bucketName,
     Key: key,
+    ACL: "public-read",
   };
   try {
     const command = new PutObjectCommand(uploadParams);

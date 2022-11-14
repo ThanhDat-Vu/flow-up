@@ -31,6 +31,17 @@ export async function getPresignedUrlToUpload() {
   return await postRequest("/user/get-presigned-url-for-upload", {});
 }
 
+export async function uploadFile(presignedUrl: string, file: any) {
+  try {
+    await fetch(presignedUrl, {
+      method: "PUT",
+      body: file,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function updateProfile(profile: Object) {
   return await postRequest("/user/update-profile", profile);
 }

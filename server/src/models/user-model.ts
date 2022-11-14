@@ -98,10 +98,13 @@ const UserSchema = new Schema(
       async updateById({ id, displayName, avatarUrl }) {
         const user: IUser = await this.findById(id).lean();
 
-        if (displayName === user?.displayName)
-          return _.pick(user, PUBLIC_FIELDS);
+        let newSlug = user.slug;
 
-        const newSlug = await generateSlug(this, displayName);
+        if (avatarUrl === user.avatarUrl && displayName === user.displayName) {
+          return _.pick(user, PUBLIC_FIELDS);
+        } else {
+          newSlug = await generateSlug(this, displayName);
+        }
 
         return await this.findByIdAndUpdate(
           id,

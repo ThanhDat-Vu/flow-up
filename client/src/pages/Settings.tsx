@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { useState, SyntheticEvent, ChangeEvent, useEffect } from "react";
 import waitforit from "../utils/waitforit";
-import { getPresignedUrlToUpload, updateProfile } from "../api";
+import { getPresignedUrlToUpload, updateProfile, uploadFile } from "../api";
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
 
@@ -18,13 +18,7 @@ function Settings() {
 
   const [avatar, setAvatar] = useState<any>();
   useEffect(() => {
-    if (!avatar) {
-      setProfile((prevProfile: IUser) => ({
-        ...prevProfile,
-        avatarUrl: undefined,
-      }));
-      return;
-    }
+    if (!avatar) return;
     const avatarUrl = URL.createObjectURL(avatar);
     setProfile((prevProfile: IUser) => ({ ...prevProfile, avatarUrl }));
     return () => URL.revokeObjectURL(avatarUrl);
@@ -41,12 +35,14 @@ function Settings() {
     e.preventDefault();
     waitforit(async () => {
       const presignedUrl = await getPresignedUrlToUpload();
-      console.log(presignedUrl);
-      // setProfile((prevProfile: IUser) => ({
-      //   ...prevProfile,
-      //   avatarUrl: presignedUrl,
-      // }));
-      // updateProfile(profile).then((user) => setProfile(user));
+      await uploadFile(presignedUrl, avatar);
+      const avatarUrl = presignedUrl.split("?")[0];
+      await updateProfile({
+        ...profile,
+        avatarUrl,
+      }).then((user) => {
+        setProfile(user);
+      });
     });
   }
 
