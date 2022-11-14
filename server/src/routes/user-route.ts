@@ -9,6 +9,7 @@ UserRoute.post(
   "/get-presigned-url-for-upload",
   UserController.getPresignedUrlToUpload
 );
+UserRoute.post("/delete-old-avatar", UserController.deleteOldAvatar);
 UserRoute.post("/update-profile", UserController.updateUserProfile);
 
 export default UserRoute;

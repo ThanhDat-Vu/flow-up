@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createPresignedUrlToUpload } from "../libs/s3-client";
+import { createPresignedUrlToUpload, deleteFileByUrl } from "../libs/s3-client";
 import User from "../models/user-model";
 import * as statusMessage from "../utils/status-message";
 
@@ -32,6 +32,18 @@ export async function getPresignedUrlToUpload(_: Request, res: Response) {
   try {
     const presignedUrl = await createPresignedUrlToUpload();
     res.json(presignedUrl);
+    statusMessage.isDone();
+  } catch (err) {
+    statusMessage.haveError();
+    console.log(err);
+  }
+}
+
+export async function deleteOldAvatar(req: Request) {
+  statusMessage.inProgress("delete old avatar");
+  try {
+    const { avatarUrl } = req.body;
+    await deleteFileByUrl(avatarUrl);
     statusMessage.isDone();
   } catch (err) {
     statusMessage.haveError();

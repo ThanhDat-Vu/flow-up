@@ -31,6 +31,12 @@ export async function getPresignedUrlToUpload() {
   return await postRequest("/user/get-presigned-url-for-upload", {});
 }
 
+export async function deleteOldAvatar(avatarUrl: string) {
+  return await postRequest("/user/delete-old-avatar", {
+    avatarUrl,
+  });
+}
+
 export async function uploadFile(presignedUrl: string, file: any) {
   try {
     await fetch(presignedUrl, {

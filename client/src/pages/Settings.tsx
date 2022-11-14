@@ -2,7 +2,12 @@ import { useLoaderData } from "react-router-dom";
 import { useState, SyntheticEvent, ChangeEvent, useEffect } from "react";
 import waitforit from "../utils/waitforit";
 import resizeImage from "../utils/resizeImage";
-import { getPresignedUrlToUpload, updateProfile, uploadFile } from "../api";
+import {
+  deleteOldAvatar,
+  getPresignedUrlToUpload,
+  updateProfile,
+  uploadFile,
+} from "../api";
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
 
@@ -33,12 +38,15 @@ function Settings() {
     }
   }
 
-  function handleSubmit(e: SyntheticEvent) {
+  async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
     waitforit(async () => {
-      const presignedUrl = await getPresignedUrlToUpload();
-      await uploadFile(presignedUrl, avatar);
-      const avatarUrl = presignedUrl.split("?")[0];
+      let avatarUrl = profile.avatarUrl;
+      if (avatarUrl !== user.avatarUrl) {
+        const presignedUrl = await getPresignedUrlToUpload();
+        await uploadFile(presignedUrl, avatar);
+        avatarUrl = presignedUrl.split("?")[0];
+      }
       await updateProfile({
         ...profile,
         avatarUrl,
@@ -46,6 +54,7 @@ function Settings() {
         setProfile(user);
       });
     });
+    await deleteOldAvatar(user.avatarUrl);
   }
 
   return (
