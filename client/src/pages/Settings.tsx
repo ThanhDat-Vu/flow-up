@@ -1,6 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { useState, SyntheticEvent, ChangeEvent, useEffect } from "react";
 import waitforit from "../utils/waitforit";
+import resizeImage from "../utils/resizeImage";
 import { getPresignedUrlToUpload, updateProfile, uploadFile } from "../api";
 import Layout from "../components/layout";
 import { Stack, Typography, Avatar, Button, TextField } from "@mui/material";
@@ -22,12 +23,13 @@ function Settings() {
     const avatarUrl = URL.createObjectURL(avatar);
     setProfile((prevProfile: IUser) => ({ ...prevProfile, avatarUrl }));
     return () => URL.revokeObjectURL(avatarUrl);
-  }, [avatar?.name]);
+  }, [avatar]);
 
-  function previewAvatar(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      setAvatar(file);
+  async function previewAvatar(e: ChangeEvent<HTMLInputElement>) {
+    const image = e.target.files ? e.target.files[0] : null;
+    if (image) {
+      const avatar = await resizeImage(image, 128, 128);
+      setAvatar(avatar);
     }
   }
 
