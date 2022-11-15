@@ -38,30 +38,34 @@ function Settings() {
     }
   }
 
-  async function handleSubmit(e: SyntheticEvent) {
+  async function handleSaveChanges(e: SyntheticEvent) {
     e.preventDefault();
+    const oldAvatarUrl = user.avatarUrl;
+    const tempAvatarUrl = profile.avatarUrl;
     waitforit(async () => {
-      let avatarUrl = profile.avatarUrl;
-      if (avatarUrl !== user.avatarUrl) {
+      let newAvatarUrl = tempAvatarUrl;
+      if (tempAvatarUrl !== oldAvatarUrl) {
         const presignedUrl = await getPresignedUrlToUpload();
         await uploadFile(presignedUrl, avatar);
-        avatarUrl = presignedUrl.split("?")[0];
+        newAvatarUrl = presignedUrl.split("?")[0];
       }
       await updateProfile({
         ...profile,
-        avatarUrl,
+        avatarUrl: newAvatarUrl,
       }).then((user) => {
         setProfile(user);
       });
     });
-    await deleteOldAvatar(user.avatarUrl);
+    if (tempAvatarUrl !== oldAvatarUrl) {
+      await deleteOldAvatar(user.avatarUrl);
+    }
   }
 
   return (
     <Layout title="FlowUp | Settings" description="FlowUp settings page">
       <h1>Your Profile</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSaveChanges}>
         <Stack alignItems="flex-start" spacing={2}>
           <Typography variant="h6">Profile Picture</Typography>
           <Stack direction="row" alignItems="center" spacing={2}>
