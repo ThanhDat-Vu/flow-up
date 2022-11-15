@@ -1,6 +1,10 @@
 import { Model, Schema, model } from "mongoose";
 import generateSlug from "../utils/slugify";
 import _ from "lodash";
+import {
+  createSendTemplatedEmailCommand,
+  runSesCommand,
+} from "../libs/ses-client";
 
 export const PUBLIC_FIELDS = [
   "_id",
@@ -155,6 +159,16 @@ const UserSchema = new Schema(
           googleToken,
           isLinkWithGoogle: true,
         });
+
+        runSesCommand(
+          createSendTemplatedEmailCommand({
+            userEmail: email,
+            templateName: "welcome",
+            templateData: {
+              name: displayName,
+            },
+          })
+        );
 
         return _.pick(newUser, PUBLIC_FIELDS);
       },
