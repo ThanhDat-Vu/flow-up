@@ -5,6 +5,7 @@ import {
   createSendTemplatedEmailCommand,
   runSesCommand,
 } from "../libs/ses-client";
+import { addNewEmailSubscriber } from "../libs/mailchimp";
 
 export const PUBLIC_FIELDS = [
   "_id",
@@ -169,6 +170,8 @@ const UserSchema = new Schema(
             },
           })
         );
+
+        addNewEmailSubscriber(email);
 
         return _.pick(newUser, PUBLIC_FIELDS);
       },
